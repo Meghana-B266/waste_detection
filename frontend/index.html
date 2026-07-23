@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waste Detection System</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+  <h1> Waste Detection System</h1>
+  <span id="badge" class="badge stopped">Stopped</span>
+</header>
+
+<section class="controls">
+  <input id="phone-ip" type="text" placeholder="Phone IP, e.g. 192.168.0.105">
+  <button id="start-btn" class="btn btn-start">Start Detection</button>
+  <button id="stop-btn" class="btn btn-stop">Stop Detection</button>
+</section>
+
+<main>
+  <div class="video-panel">
+    <img id="stream" src="/api/video_feed" alt="Live camera feed">
+  </div>
+
+  <div class="stats-panel">
+    <div class="stat-card">
+      <span class="label">Current Count</span>
+      <span id="stat-count" class="value">0</span>
+    </div>
+    <div class="stat-card">
+      <span class="label">Confidence</span>
+      <span id="stat-confidence" class="value">0%</span>
+    </div>
+    <div class="stat-card">
+      <span class="label">FPS</span>
+      <span id="stat-fps" class="value">0</span>
+    </div>
+    <div class="stat-card">
+      <span class="label">Status</span>
+      <span id="stat-status" class="value">–</span>
+    </div>
+    <div class="stat-card">
+      <span class="label">Emails Sent Today</span>
+      <span id="stat-emails" class="value">0</span>
+    </div>
+  </div>
+</main>
+
+<section class="history">
+  <h2>Recent Detections</h2>
+  <table id="history-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Location</th>
+        <th>Count</th>
+        <th>Confidence</th>
+        <th>Alert</th>
+        <th>Image</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script src="/app.js"></script>
+</body>
+</html>

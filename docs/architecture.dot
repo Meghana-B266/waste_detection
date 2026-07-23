@@ -1,0 +1,23 @@
+digraph {
+	nodesep=0.8 rankdir=LR ranksep=1.5 size="12,8"
+	node [fillcolor=lightblue fontname=Arial fontsize=14 shape=box style="rounded,filled"]
+	edge [fontname=Arial fontsize=12]
+	Camera [label="IP Camera
+Feed" fillcolor=lightcoral]
+	Preprocessing [label="Image
+Preprocessing"]
+	Detection [label="YOLOv8
+Detection"]
+	Tracking [label="ByteTrack
+Object Tracking"]
+	Alert [label="Email Alert
+System"]
+	Database [label="Database
+Logging" fillcolor=lightgreen]
+	Camera -> Preprocessing
+	Preprocessing -> Detection
+	Detection -> Tracking
+	Tracking -> Alert
+	Alert -> Database
+	Tracking -> Database
+}

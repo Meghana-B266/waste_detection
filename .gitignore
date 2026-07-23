@@ -1,0 +1,17 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Runtime artifacts (large / regenerated — don't commit to git)
+runs/
+data/*.db
+data/*.db-journal
+models/*.pt
+detections/*.jpg
+!detections/.gitkeep
