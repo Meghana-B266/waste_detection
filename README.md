@@ -227,36 +227,6 @@ Python, YOLO (Ultralytics), OpenCV, ByteTrack, FastAPI + Uvicorn, SQLAlchemy, HT
 
 ---
 
-## What was fixed during cleanup
-
-Your upload was functional in parts but had accumulated a lot of copy-pasted
-Jupyter export cruft. Here's exactly what changed:
-
-1. **`backend/detector.py` was 1286 lines** — a clean `WasteDetector` class followed by **three duplicate copies** of old notebook experiments pasted in as module-level code. One of those copies would `os.chdir()` to a hardcoded Windows path and try to open a webcam in an infinite loop the moment the file was imported. Nothing currently imports this file, so it was silently dead — but it was a landmine. **Fixed:** stripped down to just the 280-line reusable class.
-2. **`backend/database.py` was 614 lines** with the same five ORM model classes **defined twice**. **Fixed:** one definition, updated to the SQLAlchemy 2.0-style import (`declarative_base` from `sqlalchemy.orm`).
-3. **Bug:** `alerts.py` called `self.db.log_alert(...)`, a method that didn't exist on `DatabaseManager` (it only had `save_alert`), so every alert attempt silently failed to log. **Fixed:** added a `log_alert()` convenience method to `DatabaseManager` and corrected the call.
-4. **`dashboard/dashboard.py` displayed fake hardcoded sample rows**, not your real data. **Fixed:** rewritten to query `backend.database.DatabaseManager` directly, with live metrics, charts (via Plotly, already in your requirements), and real saved detection images.
-5. **Two copies of the database existed** (`data/waste_detection.db` with your real 53 detections, and an empty duplicate at `backend/data/waste_detection.db`). **Fixed:** kept only the real one, at the path the code actually expects (`data/waste_detection.db` from the project root).
-6. **`run_complete_system.py` hardcoded `PROJECT_DIR = r'C:\Users\WIN10\Desktop\...'`** — would only run on that one machine. **Fixed:** now resolves its own directory automatically (`Path(__file__).resolve().parent`), and `PHONE_IP` can come from `.env` instead of always prompting.
-7. **No `.env` or `.env.example` existed**, despite nearly every module reading config from environment variables. **Fixed:** added `.env.example` documenting all 19 variables actually used in the code.
-8. **Notebooks, `.ipynb_checkpoints`, and `__pycache__` were scattered through every folder.** **Fixed:** notebooks moved to `notebooks/`, checkpoints and cache removed (and `.gitignore` prevents them from coming back).
-9. The architecture diagram was a raw Graphviz `.dot` file with no extension. **Fixed:** renamed to `docs/architecture.dot` and rendered to `docs/architecture.png` for quick viewing.
-
-Everything else (the actual detection/tracking/email logic) was already
-working code and was left as-is.
-
-## What was added for the web version
-
-You asked for this to become a real public-facing product instead of a
-local script with a popup window. Added:
-
-- **`backend/service.py`** — the detection loop, made headless (no `cv2.imshow`) so it can run on a server with no display, in a background thread that a web request can start/stop.
-- **`backend/api.py`** — a FastAPI server exposing that loop over HTTP: live video stream, live stats, detection history, start/stop controls.
-- **`frontend/`** — a plain HTML/CSS/JS dashboard (no React/Node/build step) served directly by the FastAPI app, so there's exactly one server to run.
-- **`run_web_server.py`** — the one command to start it all: `python run_web_server.py`.
-
-Nothing in your existing `run_complete_system.py`, `dashboard/dashboard.py`, or the core detection logic was removed — they still work exactly as before, as a fallback.
-
 ## 🩹 Troubleshooting — errors you might hit
 
 **`ModuleNotFoundError: No module named 'fastapi'` (or `cv2`, `ultralytics`, etc.)**
