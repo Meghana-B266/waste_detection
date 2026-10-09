@@ -61,12 +61,12 @@ _ = model.predict(np.zeros((640, 640, 3), dtype=np.uint8), verbose=False)
 print("✓ Model loaded and ready")
 
 # Initialize database and alerts
-print("\n Initializing database...")
+print("\n📊 Initializing database...")
 init_db()
 db = DatabaseManager()
 print("✓ Database ready")
 
-print("\n Initializing alert system...")
+print("\n📧 Initializing alert system...")
 alert_mgr = AlertManager(db_manager=db)
 
 
@@ -75,7 +75,7 @@ alert_mgr = AlertManager(db_manager=db)
 
 # ============ CELL 2B: Import Water Enhancement Modules ============
 
-print("\n Loading water enhancement modules...")
+print("\n🌊 Loading water enhancement modules...")
 
 from backend.water_enhancement import (
     WaterEnhancer, 
@@ -286,7 +286,7 @@ cap = cv2.VideoCapture(camera_url)
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 if not cap.isOpened():
-    print(" Camera connection failed!")
+    print("❌ Camera connection failed!")
     raise ConnectionError("Cannot connect to camera")
 
 print("✓ Camera connected")
@@ -320,7 +320,7 @@ fps_count = 0
 current_fps = 0
 
 print("\n" + "="*80)
-print("DETECTION STARTED - ENHANCED MODE WITH WATER OPTIMIZATION")
+print("🎥 DETECTION STARTED - ENHANCED MODE WITH WATER OPTIMIZATION")
 print("="*80)
 print("Controls: 'q'=quit | 's'=save screenshot | 'r'=reset | 'p'=pause")
 print("="*80 + "\n")
@@ -333,7 +333,7 @@ try:
             # ===== FRAME CAPTURE =====
             ret, frame = cap.read()
             if not ret:
-                print(" Connection lost. Reconnecting...")
+                print("⚠️ Connection lost. Reconnecting...")
                 cap.release()
                 time.sleep(2)
                 cap = cv2.VideoCapture(camera_url)
@@ -379,7 +379,7 @@ try:
                         max_det=20
                     )
             except Exception as e:
-                print(f" Detection error: {e}")
+                print(f"⚠️ Detection error: {e}")
                 continue
             
             # ===== STEP 4: SMART FILTERING (NEW) =====
@@ -423,7 +423,7 @@ try:
                     
                     if stable_count > 0:
                         quality_str = f"{avg_quality*100:.1f}%"
-                        print(f"\n DETECTED: {stable_count} plastic item(s)")
+                        print(f"\n🗑️  DETECTED: {stable_count} plastic item(s)")
                         print(f"   Confidence: {avg_confidence:.1%} | Quality: {quality_str}")
                         
                         # ===== CREATE ANNOTATED IMAGE FOR SAVING =====
@@ -464,11 +464,11 @@ try:
                                 'fps': current_fps,
                                 'image_path': str(img_path)
                             })
-                            print(f"    Database ID: {detection_id}")
+                            print(f"   💾 Database ID: {detection_id}")
                             
                             # ===== EMAIL ALERT =====
                             if alert_mgr.should_send_alert(stable_count):
-                                print(f"    Sending email alert...")
+                                print(f"   📧 Sending email alert...")
                                 try:
                                     success = alert_mgr.trigger_alert(
                                         detection_id, 
@@ -477,19 +477,19 @@ try:
                                         str(img_path)
                                     )
                                     if not success:
-                                        print(f"     Email sending failed")
+                                        print(f"   ⚠️  Email sending failed")
                                 except Exception as email_error:
-                                    print(f"    Email error: {email_error}")
+                                    print(f"   ❌ Email error: {email_error}")
                             else:
-                                print(f"    No email sent (threshold: {alert_mgr.alert_threshold})")
+                                print(f"   ℹ️  No email sent (threshold: {alert_mgr.alert_threshold})")
                             
                         except Exception as e:
-                            print(f"     Error: {e}")
+                            print(f"   ⚠️  Error: {e}")
                             import traceback
                             traceback.print_exc()
                     
                     else:
-                        print("\n Clear - No plastic detected")
+                        print("\n✓ Clear - No plastic detected")
             
             # ============================================================================
             # VISUALIZATION - DRAW BOXES AND INFO PANEL
@@ -623,11 +623,11 @@ try:
         key = cv2.waitKey(1) & 0xFF
         
         if key == ord('q'):
-            print("\n Stopping detection...")
+            print("\n🛑 Stopping detection...")
             break
         elif key == ord('s'):
             filename = save_detection_image(annotated, current_stable_count, avg_confidence)
-            print(f"\n Screenshot saved: {filename}\n")
+            print(f"\n📸 Screenshot saved: {filename}\n")
         elif key == ord('r'):
             detection_history.clear()
             confidence_history.clear()
@@ -635,13 +635,13 @@ try:
             current_stable_count = 0
             total_detections = 0
             high_conf_detections = 0
-            print("\n System reset - recalibrating...\n")
+            print("\n🔄 System reset - recalibrating...\n")
         elif key == ord('p'):
             paused = not paused
-            print(f"\n{' PAUSED' if paused else ' RESUMED'}\n")
+            print(f"\n{'⏸️  PAUSED' if paused else '▶️  RESUMED'}\n")
 
 except KeyboardInterrupt:
-    print("\n  Interrupted by user")
+    print("\n⚠️  Interrupted by user")
 
 finally:
     # Cleanup

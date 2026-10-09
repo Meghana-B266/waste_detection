@@ -29,7 +29,7 @@ def main():
     alert_mgr = AlertManager(db_manager=db)
 
     if not alert_mgr.email_enabled:
-        print("\n ENABLE_EMAIL is not 'true' in your .env file.")
+        print("\n❌ ENABLE_EMAIL is not 'true' in your .env file.")
         print("   Set ENABLE_EMAIL=true and fill in the email fields, then rerun this.")
         return
 
@@ -40,7 +40,7 @@ def main():
     ] if not val]
 
     if missing:
-        print(f"\n Missing required .env values: {', '.join(missing)}")
+        print(f"\n❌ Missing required .env values: {', '.join(missing)}")
         return
 
     print(f"\nSending a test alert email...")
@@ -57,9 +57,9 @@ def main():
 
     print()
     if success:
-        print(" Email sent successfully! Check your inbox (and spam folder).")
+        print("✅ Email sent successfully! Check your inbox (and spam folder).")
     else:
-        print("      Email failed to send. Common causes:")
+        print("❌ Email failed to send. Common causes:")
         print("   - Using your normal Gmail password instead of an App Password")
         print("     (generate one at https://myaccount.google.com/apppasswords)")
         print("   - 2-Step Verification not enabled on the Gmail account")

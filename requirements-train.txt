@@ -1,0 +1,4 @@
+# Extra packages for training (install AFTER your normal requirements.txt)
+ultralytics>=8.3.0
+matplotlib>=3.7
+pyyaml>=6.0
